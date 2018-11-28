@@ -594,7 +594,7 @@
     alipay: {
       name: 'Alipay',
       flow: 'redirect',
-      countries: ['CN', 'HK', 'SG', 'JP'],
+      countries: ['CN', 'HK', 'SG', 'JP', 'AU'],
       currencies: [
         'aud',
         'cad',

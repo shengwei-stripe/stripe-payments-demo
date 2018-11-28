@@ -15,6 +15,28 @@ stripe.setApiVersion(config.stripe.apiVersion);
 
 module.exports = {
   running: false,
+  reset: async () => {
+    try {
+      const {data: orders} = await stripe.orders.list();
+      (orders || []).forEach(async o => {
+        console.log('Order ' + o.id);
+        await stripe.orders.update(o.id, {
+          status: 'canceled'
+        })
+      })
+
+      const productIds = ['increment', 'shirt', 'pins']; 
+      productIds.forEach(async pid => {
+        const {data: skus} = await stripe.skus.list({product: pid});
+        (skus || []).forEach(async sku => {
+          await stripe.skus.del(sku.id);
+        });
+        await stripe.products.del(pid);
+      });
+    } catch (err) {
+      console.log('⚠️  Failed to reset products to clean state.' + err);
+    }
+  },
   run: async () => {
     if (this.running) {
       console.log('⚠️  Setup already in progress.');
@@ -77,6 +99,8 @@ module.exports = {
           if (err.message === 'Product already exists.') {
             console.log('⚠️  Products have already been registered.');
             console.log('Delete them from your Dashboard to run this setup.');
+            resolve();
+            this.running = false;
           } else {
             console.log('⚠️  An error occurred.', err);
           }

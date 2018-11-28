@@ -870,3 +870,18 @@ button:active {
     text-align: center;
   }
 }
+
+
+.tag.beta {
+  background: #3ac134;
+  color: #e1f9e0;
+  padding-left: 6px;
+  padding-right: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 3px 4px;
+  margin-right: 3px;
+  border-radius: 2px;
+  position: relative;
+  left: 5px;
+}

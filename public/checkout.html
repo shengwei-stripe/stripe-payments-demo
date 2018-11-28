@@ -1,0 +1,110 @@
+<html>
+
+<head>
+  <title>Stripe Payments Demo</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@stripe">
+  <meta name="twitter:title" content="Stripe Payments Demo">
+  <meta name="twitter:description" content="Sample store accepting universal payments on the web with Stripe Elements, Payment Request, Apple Pay, Google Pay, and the Sources API.">
+  <meta name="twitter:image" content="https://stripe-payments-demo.appspot.com/images/twitter.png">
+  <link rel="stylesheet" type="text/css" href="/stylesheets/store.css">
+  <link rel="icon" type="image/png" sizes="104x80" href="/images/logo.png">
+</head>
+
+<body>
+  <div id="main" class="checkout">
+    <header>
+      <a class="shop" href="/">Stripe New Checkout Demo</a>
+      <a class="github" href="https://github.com/stripe/stripe-payments-demo">View on GitHub</a>
+    </header>
+    <div id="checkout">
+
+    <!-- Create a button that your customers click to complete their purchase. -->
+    <button id="checkout-button">Pay</button>
+    <div id="error-message"></div>
+    </div>
+    <div id="confirmation">
+      <div class="status processing">
+        <h1>Completing your order…</h1>
+        <p>We’re just waiting for the confirmation from your bank… This might take a moment but feel free to close this page.</p>
+        <p>We’ll send your receipt via email shortly.</p>
+      </div>
+      <div class="status success">
+        <h1>Thanks for your order!</h1>
+        <p>Woot! You successfully made a payment with Stripe.</p>
+        <p class="note">We just sent your receipt to your email address, and your items will be on their way shortly.</p>
+      </div>
+      <div class="status receiver">
+        <h1>Thanks! One last step!</h1>
+        <p>Please make a payment using the details below to complete your order.</p>
+        <div class="info"></div>
+      </div>
+      <div class="status error">
+        <h1>Oops, payment failed.</h1>
+        <p>It looks like your order could not be paid at this time. Please try again or select a different payment option.</p>
+        <p class="error-message"></p>
+      </div>
+    </div>
+  </div>
+  <div id="summary">
+    <header>
+      <h1>New Checkout<span class="tag beta">beta</span></h1>
+    </header>
+    <div id="order-items"></div>
+    <div id="order-total">
+      <div class="line-item demo">
+        <div id="demo">
+          <p class="label">Demo in test mode</p>
+          <p class="note">This app is running in test mode. You will
+            <em>not</em> be charged.</p>
+          <p class="note">Checkout offers a simple way to accept payments for one-time purchases and subscriptions on your website. Checkout is a page hosted on Stripe where your customers can securely enter their payment details. Your customers are sent back to your website when they complete a purchase.
+          </p>
+          <p class="note">
+You can use Checkout without using the Stripe API on your server. This makes it ideal for conventional websites or standalone frontend applications. It’s the fastest way to start accepting payments with Stripe.
+          </p>
+          <p class="note"> Feel free to try it out @
+            <a href="https://stripe.com/docs/payments/checkout" target="_blank">Checkout Quickstart</a>.
+          </p>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Stripe.js v3 for Elements -->
+  <script src="https://js.stripe.com/v3/"></script>
+  <!-- Library to render QR codes -->
+  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+  <!-- App -->
+  <script>
+      var stripe = Stripe('pk_test_D4KE5K5hLLsd41UJmHCttgwq', {
+        betas: ['checkout_beta_3']
+      });
+
+      var checkoutButton = document.getElementById('checkout-button');
+      checkoutButton.addEventListener('click', function () {
+        // When the customer clicks on the button, redirect
+        // them to Checkout.
+        stripe.redirectToCheckout({
+          items: [{sku: 'sku_E3igosJfyVCrpI', quantity: 1}],
+
+          // Note that it is not guaranteed your customers will be redirected to this
+          // URL *100%* of the time, it's possible that they could e.g. close the
+          // tab between form submission and the redirect.
+          successUrl: 'https://8e1764e4.ngrok.io/newcheckout?success=1',
+          cancelUrl: 'https://8e1764e4.ngrok.io/newcheckout?cancel=1',
+        })
+        .then(function (result) {
+          if (result.error) {
+            // If `redirectToCheckout` fails due to a browser or network
+            // error, display the localized error message to your customer.
+            var displayError = document.getElementById('error-message');
+            displayError.textContent = result.error.message;
+          }
+        });
+      });
+    </script>
+</body>
+
+</html>

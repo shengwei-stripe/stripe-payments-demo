@@ -22,6 +22,10 @@ router.get('/', (req, res) => {
   res.render('index.html');
 });
 
+app.get('/newcheckout', (req, res) => {
+  res.render('checkout.html');
+})
+
 /**
  * Stripe integration to accept all types of payments with 3 POST endpoints.
  *

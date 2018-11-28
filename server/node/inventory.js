@@ -57,7 +57,18 @@ const updateOrder = async (orderId, properties) => {
 
 // List all products.
 const listProducts = async () => {
-  return await stripe.products.list({limit: 3, type: 'good'});
+  const products = await stripe.products.list({limit: 4, type: 'good'});
+  const validProducts = ['increment', 'shirt', 'pins'];
+  const demoProducts = [];
+  for (let i =0; i<products.data.length; i++) {
+    if (validProducts.includes(products.data[i].id)) {
+      let skus = await stripe.skus.list({product: products.data[i].id});
+      products.data[i].skus = skus;
+      demoProducts.push(products.data[i]);
+    }
+  }
+  products.data = demoProducts;
+  return products;
 };
 
 // Retrieve a product by ID.
