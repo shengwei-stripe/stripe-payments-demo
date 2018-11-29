@@ -43,7 +43,7 @@ module.exports = {
   // Optionally, if you have a paid ngrok account, you can specify your `subdomain`
   // and `authtoken` in your `.env` file to use it.
   ngrok: {
-    enabled: process.env.NODE_ENV !== 'production',
+    enabled: false, //process.env.NODE_ENV !== 'production',
     port: process.env.PORT || 8000,
     subdomain: process.env.NGROK_SUBDOMAIN,
     authtoken: process.env.NGROK_AUTHTOKEN,

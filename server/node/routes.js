@@ -22,7 +22,7 @@ router.get('/', (req, res) => {
   res.render('index.html');
 });
 
-app.get('/newcheckout', (req, res) => {
+router.get('/newcheckout', (req, res) => {
   res.render('checkout.html');
 })
 

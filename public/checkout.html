@@ -92,8 +92,8 @@ You can use Checkout without using the Stripe API on your server. This makes it 
           // Note that it is not guaranteed your customers will be redirected to this
           // URL *100%* of the time, it's possible that they could e.g. close the
           // tab between form submission and the redirect.
-          successUrl: 'https://8e1764e4.ngrok.io/newcheckout?success=1',
-          cancelUrl: 'https://8e1764e4.ngrok.io/newcheckout?cancel=1',
+          successUrl: 'https://stripe-checkout-demo.herokuapp.com/newcheckout?success=1',
+          cancelUrl: 'https://stripe-checkout-demo.herokuapp.com/newcheckout?cancel=1',
         })
         .then(function (result) {
           if (result.error) {
