@@ -42,7 +42,7 @@
         <div class="info"></div>
       </div>
       <div class="status error">
-        <h1>Oops, payment failed.</h1>
+        <h1>Oops, payment cancelled.</h1>
         <p>It looks like your order could not be paid at this time. Please try again or select a different payment option.</p>
         <p class="error-message"></p>
       </div>
@@ -104,6 +104,16 @@ You can use Checkout without using the Stripe API on your server. This makes it 
           }
         });
       });
+      
+      const mainElement = document.getElementById('main');
+      if (window.location.search.includes('success')) {
+        mainElement.classList.add('success');
+      } else if (window.location.search.includes('cancel')) {
+        mainElement.classList.remove('success');
+        mainElement.classList.remove('processing');
+        mainElement.classList.remove('receiver');
+        mainElement.classList.add('error');
+      }
     </script>
 </body>
 
