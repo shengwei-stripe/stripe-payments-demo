@@ -885,3 +885,37 @@ button:active {
   position: relative;
   left: 5px;
 }
+
+.receipt-header {
+  vertical-align: middle;
+  color: #8898aa;
+  font-size: 18px;
+  line-height: 18px;
+  text-align: center;
+  padding: 3px;
+}
+
+.receipt-table {
+  width: 100%;
+  margin-bottom: 10px;
+  min-width: 600px;
+}
+
+.receipt-table-header {
+  vertical-align: middle;
+  color: #8898aa;
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.receipt-table-detail {
+  vertical-align: middle;
+  color: #525f7f;
+  font-size: 15px;
+  line-height: 24px;
+  white-space: nowrap;
+  text-transform: uppercase;
+}

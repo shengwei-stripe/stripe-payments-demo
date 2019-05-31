@@ -24,7 +24,94 @@ router.get('/', (req, res) => {
 
 router.get('/newcheckout', (req, res) => {
   res.render('checkout.html');
-})
+});
+
+class FpxBank {
+  constructor({id, name, displayName, normalizeName, businessModel, testOnly, status}) {
+    this.id = id;
+    this.name=name;
+    this.displayName = displayName;
+    this.normalizeName = normalizeName;
+    this.businessModel = businessModel;
+    this.testOnly = testOnly;
+    this.status = status;
+  }
+}
+
+const banks = [
+  new FpxBank({id: 'TEST0021', name: 'SBI Bank A', displayName: 'SBI Bank A', normalizeName: 'sbi_bank_a', businessModel: 'B2C', testOnly: true}),
+  new FpxBank({id: 'TEST0022', name: 'SBI Bank B', displayName: 'SBI Bank B', normalizeName: 'sbi_bank_b', businessModel: 'B2C', testOnly: true}),
+  new FpxBank({id: 'TEST0023', name: 'SBI Bank C', displayName: 'SBI Bank C', normalizeName: 'sbi_bank_c', businessModel: 'B2C', testOnly: true}),
+
+  new FpxBank({id: 'ABB0233', name: 'Affin Bank Berhad', displayName: 'Affin Bank', normalizeName: 'affin_bank', businessModel: 'B2C'}),
+  new FpxBank({id: 'ABB0234', name: 'Affin Bank Berhad B2C - Test ID', displayName: 'Affin B2C - Test ID', normalizeName: 'affin_bank_test', businessModel: 'B2C', testOnly: true}),
+  new FpxBank({id: 'ABMB0212', name: 'Alliance Bank Malaysia Berhad', displayName: 'Alliance Bank (Personal)', normalizeName: 'alliance_bank', businessModel: 'B2C', status: 'offline'}),
+  new FpxBank({id: 'AMBB0209', name: 'AmBank Malaysia Berhad', displayName: 'AmBank', normalizeName: 'ambank', businessModel: 'B2C'}),
+  new FpxBank({id: 'BIMB0340', name: 'Bank Islam Malaysia Berhad', displayName: 'Bank Islam', normalizeName: 'bank_islam', businessModel: 'B2C'}),
+  new FpxBank({id: 'BKRM0602', name: 'Bank Kerjasama Rakyat Malaysia Berhad', displayName: 'Bank Rakyat', normalizeName: 'bank_rakyat', businessModel: 'B2C'}),
+  new FpxBank({id: 'BMMB0341', name: 'Bank Muamalat Malaysia Berhad', displayName: 'Bank Muamalat', normalizeName: 'bank_muamalat', businessModel: 'B2C'}),
+  
+  new FpxBank({id: 'BSN0601', name: 'Bank Simpanan Nasional', displayName: 'BSN', normalizeName: 'bsn', businessModel: 'B2C'}),
+  new FpxBank({id: 'BCBB0235', name: 'CIMB Bank Berhad', displayName: 'CIMB Clicks', normalizeName: 'cimb', businessModel: 'B2C'}),
+  new FpxBank({id: 'HLB0224', name: 'Hong Leong Bank Berhad', displayName: 'Hong Leong Bank', normalizeName: 'hong_leong_bank', businessModel: 'B2C'}),
+  new FpxBank({id: 'HSBC0223', name: 'HSBC Bank Malaysia Berhad', displayName: 'HSBC Bank', normalizeName: 'hsbc', businessModel: 'B2C'}),
+  new FpxBank({id: 'KFH0346', name: 'Kuwait Finance House (Malaysia) Berhad', displayName: 'KFH', normalizeName: 'kfh', businessModel: 'B2C'}),
+  new FpxBank({id: 'MB2U0227', name: 'Malayan Banking Berhad (M2U)', displayName: 'Maybank2U', normalizeName: 'maybank2u', businessModel: 'B2C'}),
+  new FpxBank({id: 'MBB0228', name: 'Malayan Banking Berhad (M2E)', displayName: 'Maybank2E', normalizeName: 'maybank2e', businessModel: 'B2C'}),
+  
+  new FpxBank({id: 'OCBC0229', name: 'OCBC Bank Malaysia Berhad', displayName: 'OCBC Bank', normalizeName: 'ocbc', businessModel: 'B2C'}),
+  new FpxBank({id: 'PBB0233', name: 'Public Bank Berhad', displayName: 'Public Bank', normalizeName: 'public_bank', businessModel: 'B2C'}),
+  new FpxBank({id: 'RHB0218', name: 'RHB Bank Berhad', displayName: 'RHB Bank', normalizeName: 'rhb', businessModel: 'B2C'}),
+  new FpxBank({id: 'SCB0216', name: 'Standard Chartered Bank', displayName: 'Standard Chartered', normalizeName: 'standard_chartered', businessModel: 'B2C'}),
+  new FpxBank({id: 'UOB0226', name: 'United Overseas Bank', displayName: 'UOB Bank', normalizeName: 'uob', businessModel: 'B2C'}),
+  new FpxBank({id: 'UOB0229', name: 'United Overseas Bank - B2C Test', displayName: 'UOB Bank - Test', normalizeName: 'uob_test', businessModel: 'B2C', testOnly: true}),
+];
+
+router.get('/fpx', (req, res) => {
+  res.render('fpx.html');
+});
+
+router.get('/fpx/auth', (req, res) => {
+  res.render('fpxauth.html');
+});
+
+// This will create FPX payment method
+router.post('/fpx/source', (req, res) => {
+  const {bank} = req.body;
+  const {name} = banks.find(b => b.id === bank);
+  res.status(200).json({
+    "id": "src_1234",
+    "object": "source",
+    "type": "fpx",
+    "fpx": {
+      "bank": "maybank",
+      "reference": "1234455",
+    },
+    "redirect": {
+      return_url: '/fpx',
+      url: `/fpx/auth?client_secret=${bank}&bank=${name}`,
+    }
+  });
+});
+
+router.get('/fpx/banks', (req, res) => {
+  banks.sort((a, b) => {
+    var nameA = a.name.toUpperCase(); // ignore upper and lowercase
+    var nameB = b.name.toUpperCase(); // ignore upper and lowercase
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+  
+    // names must be equal
+    return 0;
+  })
+
+  res.status(200).json(banks);
+});
+
 
 /**
  * Stripe integration to accept all types of payments with 3 POST endpoints.

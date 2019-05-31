@@ -1,0 +1,247 @@
+<html>
+
+<head>
+  <title>Stripe Payments Demo</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@stripe">
+  <meta name="twitter:title" content="Stripe Payments Demo">
+  <meta name="twitter:description"
+    content="Sample store accepting universal payments on the web with Stripe Elements, Payment Request, Apple Pay, Google Pay, and the Sources API.">
+  <meta name="twitter:image" content="https://stripe-payments-demo.appspot.com/images/twitter.png">
+  <link rel="stylesheet" type="text/css" href="/stylesheets/store.css">
+  <link rel="icon" type="image/png" sizes="104x80" href="/images/logo.png">
+
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+</head>
+
+  
+
+<body>
+  <div id="main" class="checkout">
+    <header>
+      <a class="shop" href="/fpx">Stripe FPX Demo</a>
+      <a class="github" href="https://github.com/stripe/stripe-payments-demo">View on GitHub</a>
+    </header>
+    <div id="checkout" style="padding-top: 60px">
+
+      <div class="payment-info ideal visible">
+        <fieldset>
+          <label>
+            <span>
+            <img src="/images/fpx.jpeg" style="height: 40px"></img>
+            </span>
+            <div id="ideal-bank-element" class="field StripeElement StripeElement--empty">
+              <div class="__PrivateStripeElement"
+                style="margin: 0px !important; padding: 0px !important; border: none !important; display: block !important; background: transparent !important; position: relative !important; opacity: 1 !important;">
+                  <select id="banks">
+                    <option value="">Select Bank</option>
+                  </select>
+                
+                </div>
+              </div>
+            </div>
+          </label>
+        </fieldset>
+          
+
+        <!-- Create a button that your customers click to complete their purchase. -->
+      <button id="checkout-button" style="margin-top: 30px">Pay</button>
+      <div id="error-message" class="element-errors"></div>
+      <br>
+      <label>
+        <a href="https://uat.mepsfpx.com.my/FPXMain/termsAndConditions.jsp" target="_blank">Term & Conditions</a>
+      </label>
+      </br>
+
+    <div id="confirmation">
+      <div class="status processing">
+        <h1>Completing your order…</h1>
+        <p>We’re just waiting for the confirmation from your bank… This might take a moment but feel free to close this
+          page.</p>
+        <p>We’ll send your receipt via email shortly.</p>
+      </div>
+      <div class="status success">
+        <h1 style="text-align: center">Thanks for your order!</h1>
+        <p id="successResult">
+          <table class="receipt-table">
+            <tbody>
+              <tr>
+                <td class="receipt-header">Order #123</td>
+              </tr>
+              <tr>
+                <td class="receipt-header">FPX Transaction # 1905301702480799</td>
+              </tr>
+              <tr>
+                <td class="receipt-header"><span class="tag beta">Approved</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="receipt-table">
+            <tbody>
+              <tr class="receipt-table-header">
+                <td>Amount Paid</td>
+                <td>Date Paid</td>
+                <td>FPX Bank</td>
+              </tr>
+               <tr class="receipt-table-detail">
+                <td id="approve-amount">30,000 MYR</td>
+                <td id="approve-date">30-May-2019 04:59:17 PM</td>
+                <td id="approve-bank">SBI Bank A</td>
+              </tr>
+            </tbody>
+          </table>
+        </p>
+        <p class="note">We just sent your receipt to your email address, and your items will be on their way shortly.
+        </p>
+      </div>
+      <div class="status receiver">
+        <h1>Thanks! One last step!</h1>
+        <p>Please make a payment using the details below to complete your order.</p>
+        <div class="info"></div>
+      </div>
+      <div class="status error">
+        <h1 style="text-align: center">Oops, payment failed.</h1>
+        <p id="cancelResult">
+          <table class="receipt-table">
+            <tbody>
+              <tr>
+                <td class="receipt-header">Order #1234</td>
+              </tr>
+              <tr>
+                <td class="receipt-header">FPX Transaction # 1905301705490805</td>
+              </tr>
+              <tr>
+                <td class="receipt-header"><span class="tag beta" style="background: red">Insufficient Fund</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="receipt-table">
+            <tbody>
+              <tr class="receipt-table-header">
+                <td>Amount Paid</td>
+                <td>Date Paid</td>
+                <td>FPX Bank</td>
+              </tr>
+               <tr class="receipt-table-detail">
+                <td id="reject-amount">20 MYR</td>
+                <td id="reject-date">30-May-2019 04:59:17 PM</td>
+                <td id="reject-bank">SBI Bank A</td>
+              </tr>
+            </tbody>
+          </table>
+        </p>
+        <p class="error-message"></p>
+      </div>
+    </div>
+  </div>
+  <div id="summary">
+    <header>
+      <h1>FPX<span class="tag beta">UAT</span></h1>
+    </header>
+    <div id="order-items"></div>
+    <div id="order-total">
+      <div class="line-item demo">
+        <div id="demo">
+          <p class="label">Demo in test mode</p>
+          <p class="note">This app is running in test mode. You will
+            <em>not</em> be charged.</p>
+          <p class="note">
+1. Display FPX logo as per guideline
+2. Display FPX Banks list via drop-down
+3. Display the Default Option “Select bank” correctly
+4. Display the Bank’s Name with Offline status correctly and the text displayed is not truncated
+5. Display the Bank’s short name correctly – must be based on the ‘SMI - List of Financial Institution Code’ doc
+    1. short names are here, under `normalized_name` https://livegrep.corp.stripe.com/view/stripe-internal/pay-server/lib/fpx/client/types/bank.rb#L73
+6. Display banks list in alphabetical order (ascending) based on Bank Short Name
+7. FPX TC hyperlink is functioning and displayed correctly
+    1. https://uat.mepsfpx.com.my/FPXMain/termsAndConditions.jsp
+8. FPX’s Terms Conditions wording is displayed correctly
+9. Display Payment mode for model B2C (Retail Banking)/B2B (Corporate Banking)
+          </p>
+          <p class="note">
+            You can use Checkout without using the Stripe API on your server. This makes it ideal for conventional
+            websites or standalone frontend applications. It’s the fastest way to start accepting payments with Stripe.
+          </p>
+          <p class="note"> Feel free to try it out @
+            <a href="https://stripe.com/docs/payments/checkout" target="_blank">Checkout Quickstart</a>.
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Stripe.js v3 for Elements -->
+  <script src="https://js.stripe.com/v3/"></script>
+  <!-- Library to render QR codes -->
+  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+  <!-- App -->
+  <script>
+    $(document).ready(function () {
+      $.get('/fpx/banks', (banks) => {
+        banks.forEach(bank => {
+          $("#banks").append(`<option value="${bank.id}" ${bank.status=='offline' ? 'disabled="true"' : ''}>${bank.displayName} ${bank.status=='offline' ? '(offline)' : ''}</option>`);
+        })
+      });
+
+      $("#banks").change(function () {
+        var bank = this.value;
+        if (this.value) {
+          $('#error-message').removeClass('visible');
+        }
+      });
+
+      $('#checkout-button').on('click', function() {
+        const bank = $("#banks option:selected").val();
+        if (!bank) {
+          $('#error-message').text('Please select a bank to continue');
+          $('#error-message').addClass('visible');
+          return;
+        }
+        $('#checkout-button').prop('disabled', true);
+        $.post('/fpx/source', { bank }).done(({redirect}) => {
+          window.location = redirect.url;
+        });
+      });
+
+      
+
+
+    });
+
+    const search = window.location.search.replace('?', '');
+    const queries = search.split('&').reduce((result, q) => {
+        const [name, value] = q.split('=');
+        result[name] = value;
+        return result;
+    }, {});
+    const formatDate = (date) => {
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var seconds = date.getSeconds();
+      var ampm = hours >= 12 ? 'pm' : 'am';
+      hours = hours < 10 ? '0'+hours : hours;
+      minutes = minutes < 10 ? '0'+minutes : minutes;
+      seconds = seconds < 10 ? '0'+seconds : seconds;
+      var strTime = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
+      return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
+    }
+
+    const mainElement = document.getElementById('main');
+    if (search.includes('success')) {
+      mainElement.classList.add('success');
+      $('#approve-date').text(formatDate(new Date()));
+      $('#approve-bank').text(decodeURIComponent(queries.bank || 'SBI BANK A'));
+    } else if (search.includes('cancel')) {
+      mainElement.classList.remove('success');
+      mainElement.classList.remove('processing');
+      mainElement.classList.remove('receiver');
+      mainElement.classList.add('error');
+      $('#reject-date').text(formatDate(new Date()));
+      $('#reject-bank').text(decodeURIComponent(queries.bank || 'SBI BANK A'));
+    }
+  </script>
+</body>
+
+</html>

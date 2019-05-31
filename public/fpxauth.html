@@ -1,0 +1,87 @@
+<html>
+
+<head>
+  <title>Stripe Payments Demo</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@stripe">
+  <meta name="twitter:title" content="Stripe Payments Demo">
+  <meta name="twitter:description"
+    content="Sample store accepting universal payments on the web with Stripe Elements, Payment Request, Apple Pay, Google Pay, and the Sources API.">
+  <meta name="twitter:image" content="https://stripe-payments-demo.appspot.com/images/twitter.png">
+  <link rel="stylesheet" type="text/css" href="/stylesheets/store.css">
+  <link rel="icon" type="image/png" sizes="104x80" href="/images/logo.png">
+
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+</head>
+
+  
+
+<body>
+  <div id="main" class="checkout">
+    <header>
+      <a class="shop" href="/fpx">Stripe FPX Auth Demo</a>
+      <a class="github" href="https://github.com/stripe/stripe-payments-demo">View on GitHub</a>
+    </header>
+    <div id="checkout" style="padding-top: 60px">
+
+      <div class="payment-info ideal visible">
+        
+        <h3>Stripe FPX Simulator</h3>
+
+        <!-- Create a button that your customers click to complete their purchase. -->
+      <button id="btn-confirm" style="margin-top: 30px">Approve FPX Transaction</button>
+      <button id="btn-reject" style="margin-top: 30px; color:#525f7f; background: white">Fail FPX Transaction</button>
+      <div id="error-message" class="element-errors"></div>
+      </div>
+
+    
+  <div id="summary">
+    <header>
+      <h1>FPX<span class="tag beta">UAT</span></h1>
+    </header>
+    <div id="order-items"></div>
+    <div id="order-total">
+      <div class="line-item demo">
+        <div id="demo">
+          <p class="label">Demo in test mode</p>
+          <p class="note">This app is running in test mode. You will
+            <em>not</em> be charged.</p>
+          <p class="note">
+            click simulate FPX login
+          </p>
+          <p class="note"> Feel free to try it out @
+            <a href="https://stripe.com/docs/payments/checkout" target="_blank">Checkout Quickstart</a>.
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Stripe.js v3 for Elements -->
+  <script src="https://js.stripe.com/v3/"></script>
+  <!-- Library to render QR codes -->
+  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+  <!-- App -->
+  <script>
+    $(document).ready(function () {
+      const search = window.location.search.replace('?', '');
+      const queries = search.split('&').reduce((result, q) => {
+          const [name, value] = q.split('=');
+          result[name] = value;
+          return result;
+      }, {});
+
+      $('#btn-confirm').on('click', () => {
+        window.location = `/fpx?success&${search}`;
+      });
+      $('#btn-reject').on('click', () => {
+        window.location = `/fpx?cancel&${search}`;
+      });
+    });
+
+  </script>
+</body>
+
+</html>
