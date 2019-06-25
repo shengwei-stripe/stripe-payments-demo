@@ -57,7 +57,7 @@ const banks = [
   new FpxBank({id: 'HSBC0223', name: 'HSBC Bank Malaysia Berhad', displayName: 'HSBC Bank', normalizeName: 'hsbc', businessModel: 'B2C'}),
   new FpxBank({id: 'KFH0346', name: 'Kuwait Finance House (Malaysia) Berhad', displayName: 'KFH', normalizeName: 'kfh', businessModel: 'B2C'}),
   new FpxBank({id: 'MB2U0227', name: 'Malayan Banking Berhad (M2U)', displayName: 'Maybank2U', normalizeName: 'maybank2u', businessModel: 'B2C'}),
-  new FpxBank({id: 'MBB0228', name: 'Malayan Banking Berhad (M2E)', displayName: 'Maybank2E', normalizeName: 'maybank2e', businessModel: 'B2C'}),
+  // new FpxBank({id: 'MBB0228', name: 'Malayan Banking Berhad (M2E)', displayName: 'Maybank2E', normalizeName: 'maybank2e', businessModel: 'B2C'}),
   
   new FpxBank({id: 'OCBC0229', name: 'OCBC Bank Malaysia Berhad', displayName: 'OCBC Bank', normalizeName: 'ocbc', businessModel: 'B2C'}),
   new FpxBank({id: 'PBB0233', name: 'Public Bank Berhad', displayName: 'Public Bank', normalizeName: 'public_bank', businessModel: 'B2C'}),

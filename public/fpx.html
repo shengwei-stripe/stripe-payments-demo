@@ -46,14 +46,15 @@
         </fieldset>
           
 
+      <br>
+      <label>
+        <input type="checkbox" id="tosagreed" name="tosagreed">
+        I have read and agree to the <a class="link_simple" href="https://uat.mepsfpx.com.my/FPXMain/termsAndConditions.jsp" target="_blank">Term & Conditions</a>
+      </label>
+      </br>
         <!-- Create a button that your customers click to complete their purchase. -->
       <button id="checkout-button" style="margin-top: 30px">Pay</button>
       <div id="error-message" class="element-errors"></div>
-      <br>
-      <label>
-        <a href="https://uat.mepsfpx.com.my/FPXMain/termsAndConditions.jsp" target="_blank">Term & Conditions</a>
-      </label>
-      </br>
 
     <div id="confirmation">
       <div class="status processing">
@@ -68,7 +69,7 @@
           <table class="receipt-table">
             <tbody>
               <tr>
-                <td class="receipt-header">Order #123</td>
+                <td class="receipt-header receipt-header-order">Order #123</td>
               </tr>
               <tr>
                 <td class="receipt-header">FPX Transaction # 1905301702480799</td>
@@ -107,7 +108,7 @@
           <table class="receipt-table">
             <tbody>
               <tr>
-                <td class="receipt-header">Order #1234</td>
+                <td class="receipt-header receipt-header-order">Order #1234</td>
               </tr>
               <tr>
                 <td class="receipt-header">FPX Transaction # 1905301705490805</td>
@@ -192,6 +193,13 @@
         }
       });
 
+      $("#tosagreed").change(function () {
+        const tosChecked = $('#tosagreed').is(":checked");
+        if (tosChecked) {
+          $('#error-message').removeClass('visible');
+        }
+      });
+
       $('#checkout-button').on('click', function() {
         const bank = $("#banks option:selected").val();
         if (!bank) {
@@ -199,15 +207,19 @@
           $('#error-message').addClass('visible');
           return;
         }
+        const tosChecked = $('#tosagreed').is(":checked");
+        console.log(tosChecked);
+        if (!tosChecked) {
+          $('#error-message').text('Please agree to the Terms & Conditions');
+          $('#error-message').addClass('visible');
+          return;
+        }
+
         $('#checkout-button').prop('disabled', true);
         $.post('/fpx/source', { bank }).done(({redirect}) => {
           window.location = redirect.url;
         });
       });
-
-      
-
-
     });
 
     const search = window.location.search.replace('?', '');
@@ -216,7 +228,7 @@
         result[name] = value;
         return result;
     }, {});
-    const formatDate = (date) => {
+    const formatDate = (date, formatType) => {
       var hours = date.getHours();
       var minutes = date.getMinutes();
       var seconds = date.getSeconds();
@@ -224,13 +236,19 @@
       hours = hours < 10 ? '0'+hours : hours;
       minutes = minutes < 10 ? '0'+minutes : minutes;
       seconds = seconds < 10 ? '0'+seconds : seconds;
-      var strTime = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
+
+      if (formatType === 'order') {
+        return `${date.getFullYear()}${date.getMonth()+1}${date.getDate()}${hours}${minutes}${seconds}`;
+      }
+
+      var strTime = hours + ':' + minutes + ':' + seconds; //  + ' ' + ampm;
       return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
     }
 
     const mainElement = document.getElementById('main');
     if (search.includes('success')) {
       mainElement.classList.add('success');
+      $('.receipt-header-order').text(`Order #: ${formatDate(new Date(), 'order')}`);
       $('#approve-date').text(formatDate(new Date()));
       $('#approve-bank').text(decodeURIComponent(queries.bank || 'SBI BANK A'));
     } else if (search.includes('cancel')) {
@@ -238,6 +256,7 @@
       mainElement.classList.remove('processing');
       mainElement.classList.remove('receiver');
       mainElement.classList.add('error');
+      $('.receipt-header-order').text(`Order #: ${formatDate(new Date(), 'order')}`);
       $('#reject-date').text(formatDate(new Date()));
       $('#reject-bank').text(decodeURIComponent(queries.bank || 'SBI BANK A'));
     }

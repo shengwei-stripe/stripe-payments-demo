@@ -919,3 +919,7 @@ button:active {
   white-space: nowrap;
   text-transform: uppercase;
 }
+
+a.link_simple {
+  text-decoration: none;
+}
