@@ -69,10 +69,10 @@
           <table class="receipt-table">
             <tbody>
               <tr>
-                <td class="receipt-header receipt-header-order">Order #123</td>
+                <td class="receipt-header receipt-header-order">Order #20190624092809</td>
               </tr>
               <tr>
-                <td class="receipt-header">FPX Transaction # 1905301702480799</td>
+                <td class="receipt-header">FPX Transaction # 1906241531430112</td>
               </tr>
               <tr>
                 <td class="receipt-header"><span class="tag beta">Approved</span></td>
@@ -87,8 +87,8 @@
                 <td>FPX Bank</td>
               </tr>
                <tr class="receipt-table-detail">
-                <td id="approve-amount">30,000 MYR</td>
-                <td id="approve-date">30-May-2019 04:59:17 PM</td>
+                <td id="approve-amount">10 MYR</td>
+                <td id="approve-date">6/24/2019 15:31:43</td>
                 <td id="approve-bank">SBI Bank A</td>
               </tr>
             </tbody>
@@ -108,10 +108,10 @@
           <table class="receipt-table">
             <tbody>
               <tr>
-                <td class="receipt-header receipt-header-order">Order #1234</td>
+                <td class="receipt-header receipt-header-order">Order #20190624092956</td>
               </tr>
               <tr>
-                <td class="receipt-header">FPX Transaction # 1905301705490805</td>
+                <td class="receipt-header">FPX Transaction # 1906241533290118</td>
               </tr>
               <tr>
                 <td class="receipt-header"><span class="tag beta" style="background: red">Insufficient Fund</span></td>
@@ -126,9 +126,9 @@
                 <td>FPX Bank</td>
               </tr>
                <tr class="receipt-table-detail">
-                <td id="reject-amount">20 MYR</td>
-                <td id="reject-date">30-May-2019 04:59:17 PM</td>
-                <td id="reject-bank">SBI Bank A</td>
+                <td id="reject-amount">10 MYR</td>
+                <td id="reject-date">6/24/2019 15:33:29</td>
+                <td id="reject-bank">SBI Bank B</td>
               </tr>
             </tbody>
           </table>
@@ -248,17 +248,17 @@
     const mainElement = document.getElementById('main');
     if (search.includes('success')) {
       mainElement.classList.add('success');
-      $('.receipt-header-order').text(`Order #: ${formatDate(new Date(), 'order')}`);
-      $('#approve-date').text(formatDate(new Date()));
+      // $('.receipt-header-order').text(`Order #: ${formatDate(new Date(), 'order')}`);
+      // $('#approve-date').text(formatDate(new Date()));
       $('#approve-bank').text(decodeURIComponent(queries.bank || 'SBI BANK A'));
     } else if (search.includes('cancel')) {
       mainElement.classList.remove('success');
       mainElement.classList.remove('processing');
       mainElement.classList.remove('receiver');
       mainElement.classList.add('error');
-      $('.receipt-header-order').text(`Order #: ${formatDate(new Date(), 'order')}`);
-      $('#reject-date').text(formatDate(new Date()));
-      $('#reject-bank').text(decodeURIComponent(queries.bank || 'SBI BANK A'));
+      // $('.receipt-header-order').text(`Order #: ${formatDate(new Date(), 'order')}`);
+      // $('#reject-date').text(formatDate(new Date()));
+      $('#reject-bank').text(decodeURIComponent(queries.bank || 'SBI BANK B'));
     }
   </script>
 </body>
