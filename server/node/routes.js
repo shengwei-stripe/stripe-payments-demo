@@ -64,7 +64,7 @@ const banks = [
   new FpxBank({id: 'RHB0218', name: 'RHB Bank Berhad', displayName: 'RHB Bank', normalizeName: 'rhb', businessModel: 'B2C'}),
   new FpxBank({id: 'SCB0216', name: 'Standard Chartered Bank', displayName: 'Standard Chartered', normalizeName: 'standard_chartered', businessModel: 'B2C'}),
   new FpxBank({id: 'UOB0226', name: 'United Overseas Bank', displayName: 'UOB Bank', normalizeName: 'uob', businessModel: 'B2C'}),
-  new FpxBank({id: 'UOB0229', name: 'United Overseas Bank - B2C Test', displayName: 'UOB Bank - Test', normalizeName: 'uob_test', businessModel: 'B2C', testOnly: true}),
+  new FpxBank({id: 'UOB0229', name: 'United Overseas Bank - B2C Test', displayName: 'UOB Bank - Test ID', normalizeName: 'uob_test', businessModel: 'B2C', testOnly: true}),
 ];
 
 router.get('/fpx', (req, res) => {
@@ -96,8 +96,8 @@ router.post('/fpx/source', (req, res) => {
 
 router.get('/fpx/banks', (req, res) => {
   banks.sort((a, b) => {
-    var nameA = a.name.toUpperCase(); // ignore upper and lowercase
-    var nameB = b.name.toUpperCase(); // ignore upper and lowercase
+    var nameA = a.displayName.toUpperCase(); // ignore upper and lowercase
+    var nameB = b.displayName.toUpperCase(); // ignore upper and lowercase
     if (nameA < nameB) {
       return -1;
     }
