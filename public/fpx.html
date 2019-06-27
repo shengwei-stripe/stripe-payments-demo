@@ -225,7 +225,7 @@
 
       $('#checkout-button').on('click', function() {
         if (Number(amount) > limit.b2c.max) {
-          $('#error-message').text(`You can not charge more amount than RM${numberWithCommas(limit.b2c.max)}`);
+          $('#error-message').text(`You can not charge amount more than RM${numberWithCommas(limit.b2c.max)}`);
           $('#error-message').addClass('visible');
           return;
         }
