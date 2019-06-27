@@ -38,7 +38,7 @@
                   <select id="banks">
                     <option value="">Select Bank</option>
                   </select>
-                
+                  <span id="bankMode" style="color: #666ee8;"></span>
                 </div>
               </div>
             </div>
@@ -179,18 +179,41 @@
   <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
   <!-- App -->
   <script>
+    const search = window.location.search.replace('?', '');
+    const queries = search.split('&').reduce((result, q) => {
+        const [name, value] = q.split('=');
+        result[name] = value;
+        return result;
+    }, {});
+    var bankMap = {};
+    const limit = {
+      b2c: {max: 30000, min: 1},
+      b2b: {max: 1000000, min: 2},
+    };
+
+    const amount = queries.amount || '20';
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    $('#checkout-button').text(`Pay RM${numberWithCommas(amount)}`);
+      
     $(document).ready(function () {
       $.get('/fpx/banks', (banks) => {
         banks.forEach(bank => {
           $("#banks").append(`<option value="${bank.id}" ${bank.status=='offline' ? 'disabled="true"' : ''}>${bank.displayName} ${bank.status=='offline' ? '(offline)' : ''}</option>`);
-        })
+          bankMap[bank.id] = bank;
+        });
       });
 
       $("#banks").change(function () {
         var bank = this.value;
         if (this.value) {
           $('#error-message').removeClass('visible');
+          $('#bankMode').text((bankMap[bank].businessModel || 'unknown').toUpperCase());
+        } else {
+          $('#bankMode').text('');
         }
+
       });
 
       $("#tosagreed").change(function () {
@@ -201,6 +224,18 @@
       });
 
       $('#checkout-button').on('click', function() {
+        if (Number(amount) > limit.b2c.max) {
+          $('#error-message').text(`You can not charge more amount than RM${numberWithCommas(limit.b2c.max)}`);
+          $('#error-message').addClass('visible');
+          return;
+        }
+
+        if (Number(amount) < limit.b2c.min) {
+          $('#error-message').text(`You can not charge aoumout lower than RM${numberWithCommas(limit.b2c.min)}`);
+          $('#error-message').addClass('visible');
+          return;
+        }
+
         const bank = $("#banks option:selected").val();
         if (!bank) {
           $('#error-message').text('Please select a bank to continue');
@@ -222,12 +257,6 @@
       });
     });
 
-    const search = window.location.search.replace('?', '');
-    const queries = search.split('&').reduce((result, q) => {
-        const [name, value] = q.split('=');
-        result[name] = value;
-        return result;
-    }, {});
     const formatDate = (date, formatType) => {
       var hours = date.getHours();
       var minutes = date.getMinutes();

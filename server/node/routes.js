@@ -65,6 +65,7 @@ const banks = [
   new FpxBank({id: 'SCB0216', name: 'Standard Chartered Bank', displayName: 'Standard Chartered', normalizeName: 'standard_chartered', businessModel: 'B2C'}),
   new FpxBank({id: 'UOB0226', name: 'United Overseas Bank', displayName: 'UOB Bank', normalizeName: 'uob', businessModel: 'B2C'}),
   new FpxBank({id: 'UOB0229', name: 'United Overseas Bank - B2C Test', displayName: 'UOB Bank - Test ID', normalizeName: 'uob_test', businessModel: 'B2C', testOnly: true}),
+  new FpxBank({id: 'CIT0219', name: 'CIT0219', displayName: 'CIT0219', normalizeName: 'citi', businessModel: 'B2C'}),
 ];
 
 router.get('/fpx', (req, res) => {
