@@ -72,7 +72,7 @@
                 <td class="receipt-header receipt-header-order">Order #20190624092809</td>
               </tr>
               <tr>
-                <td class="receipt-header">FPX Transaction # 1906271732380569</td>
+                <td class="receipt-header receipt-header-txn">FPX Transaction # 1906271732380569</td>
               </tr>
               <tr>
                 <td class="receipt-header"><span class="tag beta">Approved</span></td>
@@ -111,7 +111,7 @@
                 <td class="receipt-header receipt-header-order">Order #20190624092956</td>
               </tr>
               <tr>
-                <td class="receipt-header">FPX Transaction # 1906271858280672</td>
+                <td class="receipt-header receipt-header-txn">FPX Transaction # 1906271858280672</td>
               </tr>
               <tr>
                 <td class="receipt-header"><span class="tag beta" style="background: red">Insufficient Fund</span></td>
@@ -288,6 +288,21 @@
       // $('.receipt-header-order').text(`Order #: ${formatDate(new Date(), 'order')}`);
       // $('#reject-date').text(formatDate(new Date()));
       $('#reject-bank').text(decodeURIComponent(queries.bank || 'SBI BANK B'));
+    }
+
+    // Dynamic set order and txn id
+    if (queries.order) {
+      $('.receipt-header-order').text(`Order #${queries.order}`);
+    }
+    if (queries.txn) {
+      $('.receipt-header-txn').text(`FPX Transaction # ${queries.txn}`);
+    }
+
+    if (queries.txndt) {
+      const txnDatetime = 
+      `${queries.txndt.substr(4,2)}/${queries.txndt.substr(6,2)}/${queries.txndt.substr(0,4)} ${queries.txndt.substr(8,2)}:${queries.txndt.substr(10,2)}:${queries.txndt.substr(12,2)}`;
+      $('#approve-date').text(txnDatetime);
+      $('#reject-date').text(txnDatetime);
     }
   </script>
 </body>
