@@ -44,12 +44,12 @@
             </div>
           </label>
         </fieldset>
-          
-
+        <span id="bankModeDesc" style="color: #666ee8;"></span>  
+<br>
       <br>
       <label>
         <input type="checkbox" id="tosagreed" name="tosagreed">
-        I have read and agree to the <a class="link_simple_x" href="https://www.mepsfpx.com.my/FPXMain/termsAndConditions.jsp" target="_blank">Term & Conditions</a>
+        I have read and agree to the <a class="link_simple_x" href="https://www.mepsfpx.com.my/FPXMain/termsAndConditions.jsp" target="_blank">Terms & Conditions</a>
       </label>
       </br>
         <!-- Create a button that your customers click to complete their purchase. -->
@@ -210,8 +210,10 @@
         if (this.value) {
           $('#error-message').removeClass('visible');
           $('#bankMode').text((bankMap[bank].businessModel || 'unknown').toUpperCase());
+          $('#bankModeDesc').text('Payment Mode: B2C (Retail Banking)');
         } else {
           $('#bankMode').text('');
+          $('#bankModeDesc').text('');
         }
 
       });
@@ -231,7 +233,7 @@
         }
 
         if (Number(amount) < limit.b2c.min) {
-          $('#error-message').text(`You can not charge aoumout lower than RM${numberWithCommas(limit.b2c.min)}`);
+          $('#error-message').text(`You can not charge amount lower than RM${numberWithCommas(limit.b2c.min)}`);
           $('#error-message').addClass('visible');
           return;
         }

@@ -45,27 +45,27 @@ const banks = [
 
   new FpxBank({id: 'ABB0233', name: 'Affin Bank Berhad', displayName: 'Affin Bank', normalizeName: 'affin_bank', businessModel: 'B2C'}),
   new FpxBank({id: 'ABB0234', name: 'Affin Bank Berhad B2C - Test ID', displayName: 'Affin B2C - Test ID', normalizeName: 'affin_bank_test', businessModel: 'B2C', testOnly: true}),
-  new FpxBank({id: 'ABMB0212', name: 'Alliance Bank Malaysia Berhad', displayName: 'Alliance Bank (Personal)', normalizeName: 'alliance_bank', businessModel: 'B2C', status: 'offline'}),
+  new FpxBank({id: 'ABMB0212', name: 'Alliance Bank Malaysia Berhad', displayName: 'Alliance Bank (Personal)', normalizeName: 'alliance_bank', businessModel: 'B2C'}),
   new FpxBank({id: 'AMBB0209', name: 'AmBank Malaysia Berhad', displayName: 'AmBank', normalizeName: 'ambank', businessModel: 'B2C'}),
-  new FpxBank({id: 'BIMB0340', name: 'Bank Islam Malaysia Berhad', displayName: 'Bank Islam', normalizeName: 'bank_islam', businessModel: 'B2C'}),
+  new FpxBank({id: 'BIMB0340', name: 'Bank Islam Malaysia Berhad', displayName: 'Bank Islam', normalizeName: 'bank_islam', businessModel: 'B2C', status: 'offline'}),
   new FpxBank({id: 'BKRM0602', name: 'Bank Kerjasama Rakyat Malaysia Berhad', displayName: 'Bank Rakyat', normalizeName: 'bank_rakyat', businessModel: 'B2C'}),
-  new FpxBank({id: 'BMMB0341', name: 'Bank Muamalat Malaysia Berhad', displayName: 'Bank Muamalat', normalizeName: 'bank_muamalat', businessModel: 'B2C'}),
+  new FpxBank({id: 'BMMB0341', name: 'Bank Muamalat Malaysia Berhad', displayName: 'Bank Muamalat', normalizeName: 'bank_muamalat', businessModel: 'B2C', status: 'offline'}),
   
   new FpxBank({id: 'BSN0601', name: 'Bank Simpanan Nasional', displayName: 'BSN', normalizeName: 'bsn', businessModel: 'B2C'}),
   new FpxBank({id: 'BCBB0235', name: 'CIMB Bank Berhad', displayName: 'CIMB Clicks', normalizeName: 'cimb', businessModel: 'B2C'}),
   new FpxBank({id: 'HLB0224', name: 'Hong Leong Bank Berhad', displayName: 'Hong Leong Bank', normalizeName: 'hong_leong_bank', businessModel: 'B2C'}),
   new FpxBank({id: 'HSBC0223', name: 'HSBC Bank Malaysia Berhad', displayName: 'HSBC Bank', normalizeName: 'hsbc', businessModel: 'B2C'}),
-  new FpxBank({id: 'KFH0346', name: 'Kuwait Finance House (Malaysia) Berhad', displayName: 'KFH', normalizeName: 'kfh', businessModel: 'B2C'}),
+  new FpxBank({id: 'KFH0346', name: 'Kuwait Finance House (Malaysia) Berhad', displayName: 'KFH', normalizeName: 'kfh', businessModel: 'B2C', status: 'offline'}),
   new FpxBank({id: 'MB2U0227', name: 'Malayan Banking Berhad (M2U)', displayName: 'Maybank2U', normalizeName: 'maybank2u', businessModel: 'B2C'}),
   // new FpxBank({id: 'MBB0228', name: 'Malayan Banking Berhad (M2E)', displayName: 'Maybank2E', normalizeName: 'maybank2e', businessModel: 'B2C'}),
   
   new FpxBank({id: 'OCBC0229', name: 'OCBC Bank Malaysia Berhad', displayName: 'OCBC Bank', normalizeName: 'ocbc', businessModel: 'B2C'}),
   new FpxBank({id: 'PBB0233', name: 'Public Bank Berhad', displayName: 'Public Bank', normalizeName: 'public_bank', businessModel: 'B2C'}),
-  new FpxBank({id: 'RHB0218', name: 'RHB Bank Berhad', displayName: 'RHB Bank', normalizeName: 'rhb', businessModel: 'B2C'}),
-  new FpxBank({id: 'SCB0216', name: 'Standard Chartered Bank', displayName: 'Standard Chartered', normalizeName: 'standard_chartered', businessModel: 'B2C'}),
-  new FpxBank({id: 'UOB0226', name: 'United Overseas Bank', displayName: 'UOB Bank', normalizeName: 'uob', businessModel: 'B2C'}),
+  new FpxBank({id: 'RHB0218', name: 'RHB Bank Berhad', displayName: 'RHB Bank', normalizeName: 'rhb', businessModel: 'B2C', status: 'offline'}),
+  new FpxBank({id: 'SCB0216', name: 'Standard Chartered Bank', displayName: 'Standard Chartered', normalizeName: 'standard_chartered', businessModel: 'B2C', status: 'offline'}),
+  new FpxBank({id: 'UOB0226', name: 'United Overseas Bank', displayName: 'UOB Bank', normalizeName: 'uob', businessModel: 'B2C', status: 'offline'}),
   new FpxBank({id: 'UOB0229', name: 'United Overseas Bank - B2C Test', displayName: 'UOB Bank - Test ID', normalizeName: 'uob_test', businessModel: 'B2C', testOnly: true}),
-  new FpxBank({id: 'CIT0219', name: 'CIT0219', displayName: 'CIT0219', normalizeName: 'citi', businessModel: 'B2C'}),
+  new FpxBank({id: 'CIT0219', name: 'CIT0219', displayName: 'CIT0219', normalizeName: 'citi', businessModel: 'B2C', status: 'offline'}),
 ];
 
 router.get('/fpx', (req, res) => {
