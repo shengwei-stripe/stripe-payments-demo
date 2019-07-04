@@ -49,7 +49,7 @@
       <br>
       <label>
         <input type="checkbox" id="tosagreed" name="tosagreed">
-        I have read and agree to the <a class="link_simple_x" href="https://www.mepsfpx.com.my/FPXMain/termsAndConditions.jsp" target="_blank">Terms & Conditions</a>
+        I have read and agree to FPX's <a class="link_simple_x" href="https://www.mepsfpx.com.my/FPXMain/termsAndConditions.jsp" target="_blank">Terms & Conditions</a>
       </label>
       </br>
         <!-- Create a button that your customers click to complete their purchase. -->
@@ -247,7 +247,7 @@
         const tosChecked = $('#tosagreed').is(":checked");
         console.log(tosChecked);
         if (!tosChecked) {
-          $('#error-message').text('Please agree to the Terms & Conditions');
+          $('#error-message').text('Please agree to FPX\'s Terms & Conditions');
           $('#error-message').addClass('visible');
           return;
         }
