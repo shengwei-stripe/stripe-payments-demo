@@ -114,7 +114,7 @@
                 <td class="receipt-header receipt-header-txn">FPX Transaction # 1906271858280672</td>
               </tr>
               <tr>
-                <td class="receipt-header"><span class="tag beta" style="background: red">Insufficient Fund</span></td>
+                <td class="receipt-header"><span id="txnErrCode" class="tag beta" style="background: red">Insufficient Fund</span></td>
               </tr>
             </tbody>
           </table>
@@ -209,7 +209,6 @@
 
     $(document).ready(async function () {
       const config = await getConfig();
-      console.log(config);
       const stripe = Stripe(config.stripePublishableKey);
 
       $.get('/fpx/banks', (banks) => {
@@ -259,7 +258,6 @@
           return;
         }
         const tosChecked = $('#tosagreed').is(":checked");
-        console.log(tosChecked);
         if (!tosChecked) {
           $('#error-message').text('Please agree to FPX\'s Terms & Conditions');
           $('#error-message').addClass('visible');
@@ -283,7 +281,7 @@
         case 'requires_action':
         case 'requires_source_action':
           let bankUrl = pi.next_action.redirect_to_url.url;
-          alert('redircting to bank ', bankUrl);
+          alert(`Redirecting to bank ${$("#banks option:selected").val()}`);
           window.location = bankUrl;
           break;
         
@@ -310,34 +308,43 @@
     }
 
     const mainElement = document.getElementById('main');
-    if (search.includes('success')) {
-      mainElement.classList.add('success');
-      // $('.receipt-header-order').text(`Order #: ${formatDate(new Date(), 'order')}`);
-      // $('#approve-date').text(formatDate(new Date()));
-      $('#approve-bank').text(decodeURIComponent(queries.bank || 'SBI BANK A'));
-    } else if (search.includes('cancel')) {
-      mainElement.classList.remove('success');
-      mainElement.classList.remove('processing');
-      mainElement.classList.remove('receiver');
-      mainElement.classList.add('error');
-      // $('.receipt-header-order').text(`Order #: ${formatDate(new Date(), 'order')}`);
-      // $('#reject-date').text(formatDate(new Date()));
-      $('#reject-bank').text(decodeURIComponent(queries.bank || 'SBI BANK B'));
-    }
+    // Get payment_intent information
+    if (queries.payment_intent) {
+      $.get(`/fpx/pi/${queries.payment_intent}`)
+        .done(({fpxTxnDetails, err}) => {
+          // Generic Error
+          if (err) {
+            $('#cancelResult').hide();
+            $('.error-message').text(err);
+            return;
+          }
 
-    // Dynamic set order and txn id
-    if (queries.order) {
-      $('.receipt-header-order').text(`Order #${queries.order}`);
-    }
-    if (queries.txn) {
-      $('.receipt-header-txn').text(`FPX Transaction # ${queries.txn}`);
-    }
+          let { txnDt, amount, sellerOrderNum, txnId, buyerBank, txnStatus, error, code} = fpxTxnDetails;
+          const txnDatetime = new Date(0);
+          txnDatetime.setUTCSeconds(txnDt);
 
-    if (queries.txndt) {
-      const txnDatetime = 
-      `${queries.txndt.substr(4,2)}/${queries.txndt.substr(6,2)}/${queries.txndt.substr(0,4)} ${queries.txndt.substr(8,2)}:${queries.txndt.substr(10,2)}:${queries.txndt.substr(12,2)}`;
-      $('#approve-date').text(txnDatetime);
-      $('#reject-date').text(txnDatetime);
+          $('.receipt-header-order').text(`Seller Order #${sellerOrderNum}`);
+          $('.receipt-header-txn').text(`FPX Transaction # ${txnId}`);
+
+          if (error) {
+            mainElement.classList.remove('success');
+            mainElement.classList.remove('processing');
+            mainElement.classList.remove('receiver');
+            mainElement.classList.add('error');
+
+            $('#reject-date').text(formatDate(txnDatetime));
+            $('#reject-bank').text(buyerBank);
+            $('#reject-amount').text(`${amount} MYR`);
+            $('.error-message').text(err);
+            $('#txnErrCode').text(code);
+            return;
+          };
+
+          mainElement.classList.add('success');
+          $('#approve-date').text(formatDate(txnDatetime));
+          $('#approve-bank').text(buyerBank);
+          $('#approve-amount').text(`${amount} MYR`);
+        });
     }
   </script>
 </body>

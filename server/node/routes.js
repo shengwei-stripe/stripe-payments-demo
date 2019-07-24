@@ -93,6 +93,42 @@ router.post('/fpx/pi', async (req, res) => {
   }
 });
 
+router.get('/fpx/pi/:id', async (req, res) => {
+  try {
+    const pi = await stripe.paymentIntents.retrieve(req.params.id);
+    const charge = pi.charges.data[0];
+    const lastPaymentErr = pi.last_payment_error;
+    
+    let fpxTxnDetails = charge ? {
+      txnDt: charge.created,
+      amount: charge.amount / 100,
+      sellerOrderNum: charge.statement_descriptor, // WIP
+      txnId: charge.payment_method_details.fpx_transaction_id, // WIP
+      buyerBank: charge.payment_method_details.fpx.bank,
+      txnStatus: charge.status,
+    } : {
+      txnDt: lastPaymentErr.payment_method.created,
+      amount: pi.amount / 100,
+      sellerOrderNum: 'NA', // WIP
+      txnId: 'NA', // WIP
+      buyerBank: lastPaymentErr.payment_method.fpx.bank, // WIP 
+      txnStatus: 'failed',
+      error: lastPaymentErr.message,
+      code: lastPaymentErr.code,
+    };
+
+    res.status(200).json({
+      fpxTxnDetails,
+      lastPaymentErr,
+      charge,
+    });
+  } catch(err) {
+    res.status(401).json({
+      err: `${err}`,
+    });
+  }
+});
+
 // This will create FPX payment method
 // Using Manual Confirmation route.
 router.post('/fpx/pm', async (req, res) => {
@@ -113,7 +149,6 @@ router.post('/fpx/pm', async (req, res) => {
       currency,
       payment_method_types: ['fpx'],
     });
-    console.log(pi);
 
     // 2. Creating the payment method
     let pm = await stripe.paymentMethods.create({
@@ -122,7 +157,6 @@ router.post('/fpx/pm', async (req, res) => {
         bank: bankName
       }
     });
-    console.log('pm', pm);
 
     // 3. Confirm PaymentIntent
     pi = await stripe.paymentIntents.confirm(pi.id, {
@@ -130,7 +164,6 @@ router.post('/fpx/pm', async (req, res) => {
       return_url: returnUrl,
     });
 
-    console.log('intent', pi);
     res.status(200).json({
       pm,
       pi,
