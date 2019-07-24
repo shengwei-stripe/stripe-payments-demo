@@ -196,8 +196,22 @@
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
     $('#checkout-button').text(`Pay RM${numberWithCommas(amount)}`);
-      
-    $(document).ready(function () {
+
+    async function getConfig() {
+      try {
+        const response = await fetch('/config');
+        const config = await response.json();
+        return config;
+      } catch (err) {
+        return {error: err.message};
+      }
+    }
+
+    $(document).ready(async function () {
+      const config = await getConfig();
+      console.log(config);
+      const stripe = Stripe(config.stripePublishableKey);
+
       $.get('/fpx/banks', (banks) => {
         banks.forEach(bank => {
           $("#banks").append(`<option value="${bank.id}" ${bank.status=='offline' ? 'disabled="true"' : ''}>${bank.displayName} ${bank.status=='offline' ? '(offline)' : ''}</option>`);
@@ -253,11 +267,30 @@
         }
 
         $('#checkout-button').prop('disabled', true);
-        $.post('/fpx/source', { bank }).done(({redirect}) => {
-          window.location = redirect.url;
-        });
+        $.post('/fpx/pm', {
+            bank,
+            amount: Number(amount) * 100,
+          })
+          .done(({pm, pi}) => {
+            // Handle redirect
+            handlePaymentIntent(pi);
+          });
       });
     });
+
+    const handlePaymentIntent = (pi) => {
+      switch(pi.status) {
+        case 'requires_action':
+        case 'requires_source_action':
+          let bankUrl = pi.next_action.redirect_to_url.url;
+          alert('redircting to bank ', bankUrl);
+          window.location = bankUrl;
+          break;
+        
+        default:
+          alert(`Payment Intent in ${pi.status} status which is not right, pls check the code `);
+      }
+    }
 
     const formatDate = (date, formatType) => {
       var hours = date.getHours();

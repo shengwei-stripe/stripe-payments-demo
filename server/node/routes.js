@@ -57,7 +57,6 @@ const banks = [
   new FpxBank({id: 'HSBC0223', name: 'HSBC Bank Malaysia Berhad', displayName: 'HSBC Bank', normalizeName: 'hsbc', businessModel: 'B2C'}),
   new FpxBank({id: 'KFH0346', name: 'Kuwait Finance House (Malaysia) Berhad', displayName: 'KFH', normalizeName: 'kfh', businessModel: 'B2C', status: 'offline'}),
   new FpxBank({id: 'MB2U0227', name: 'Malayan Banking Berhad (M2U)', displayName: 'Maybank2U', normalizeName: 'maybank2u', businessModel: 'B2C'}),
-  // new FpxBank({id: 'MBB0228', name: 'Malayan Banking Berhad (M2E)', displayName: 'Maybank2E', normalizeName: 'maybank2e', businessModel: 'B2C'}),
   
   new FpxBank({id: 'OCBC0229', name: 'OCBC Bank Malaysia Berhad', displayName: 'OCBC Bank', normalizeName: 'ocbc', businessModel: 'B2C'}),
   new FpxBank({id: 'PBB0233', name: 'Public Bank Berhad', displayName: 'Public Bank', normalizeName: 'public_bank', businessModel: 'B2C'}),
@@ -76,23 +75,71 @@ router.get('/fpx/auth', (req, res) => {
   res.render('fpxauth.html');
 });
 
+// Step 1: create payment_intent
+router.post('/fpx/pi', async (req, res) => {
+  const options = req.body || {};
+
+  try {
+    let pi = await stripe.paymentIntents.create({
+      amount: options.amount || 10,
+      currency: options.currency || 'myr',
+      payment_method_types: ['fpx'],
+    });
+    res.status(200).json({pi});
+  } catch(err) {
+    res.status(401).json({
+      err: `${err}`,
+    });
+  }
+});
+
 // This will create FPX payment method
-router.post('/fpx/source', (req, res) => {
-  const {bank} = req.body;
-  const {name} = banks.find(b => b.id === bank);
-  res.status(200).json({
-    "id": "src_1234",
-    "object": "source",
-    "type": "fpx",
-    "fpx": {
-      "bank": "maybank",
-      "reference": "1234455",
-    },
-    "redirect": {
-      return_url: '/fpx',
-      url: `/fpx/auth?client_secret=${bank}&bank=${name}`,
-    }
-  });
+// Using Manual Confirmation route.
+router.post('/fpx/pm', async (req, res) => {
+  const {
+    bank, 
+    amount=100, 
+    currency='myr',
+    returnUrl='http://localhost:8000/fpx?success',
+  } = req.body;
+  
+  // Bank should be normalized_name for bank
+  const {normalizeName: bankName} = banks.find(b => b.id === bank);
+
+  try {
+    // 1. Create payment_intent
+    let pi = await stripe.paymentIntents.create({
+      amount,
+      currency,
+      payment_method_types: ['fpx'],
+    });
+    console.log(pi);
+
+    // 2. Creating the payment method
+    let pm = await stripe.paymentMethods.create({
+      type: 'fpx',
+      fpx: {
+        bank: bankName
+      }
+    });
+    console.log('pm', pm);
+
+    // 3. Confirm PaymentIntent
+    pi = await stripe.paymentIntents.confirm(pi.id, {
+      payment_method: pm.id,
+      return_url: returnUrl,
+    });
+
+    console.log('intent', pi);
+    res.status(200).json({
+      pm,
+      pi,
+    });
+  } catch (err) {
+    res.status(401).json({
+      err: `${err}`,
+    });
+  }
 });
 
 router.get('/fpx/banks', (req, res) => {
