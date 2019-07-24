@@ -268,6 +268,7 @@
         $.post('/fpx/pm', {
             bank,
             amount: Number(amount) * 100,
+            returnUrl: 'https://stripe-checkout-demo.herokuapp.com/fpx',
           })
           .done(({pm, pi}) => {
             // Handle redirect
