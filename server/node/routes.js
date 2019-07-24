@@ -26,46 +26,55 @@ router.get('/newcheckout', (req, res) => {
   res.render('checkout.html');
 });
 
+
 class FpxBank {
-  constructor({id, name, displayName, normalizeName, businessModel, testOnly, status}) {
+  constructor({id, name, displayNames, normalizeName, testOnly, status}) {
     this.id = id;
     this.name=name;
-    this.displayName = displayName;
+    this.displayNames = displayNames;
     this.normalizeName = normalizeName;
-    this.businessModel = businessModel;
     this.testOnly = testOnly;
     this.status = status;
   }
 }
 
+// set some of the banks as offline for now
 const banks = [
-  new FpxBank({id: 'TEST0021', name: 'SBI Bank A', displayName: 'SBI Bank A', normalizeName: 'sbi_bank_a', businessModel: 'B2C', testOnly: true}),
-  new FpxBank({id: 'TEST0022', name: 'SBI Bank B', displayName: 'SBI Bank B', normalizeName: 'sbi_bank_b', businessModel: 'B2C', testOnly: true}),
-  new FpxBank({id: 'TEST0023', name: 'SBI Bank C', displayName: 'SBI Bank C', normalizeName: 'sbi_bank_c', businessModel: 'B2C', testOnly: true}),
+    new FpxBank({id: "ABB0234", name: "Affin Bank Berhad B2C - Test ID", displayNames: {B2C: "Affin B2C - Test ID"}, normalizeName: "affin_bank_test", is_testing_only: true}),
+    new FpxBank({id: "ABB0233", name: "Affin Bank Berhad", displayNames: {B2C:  "Affin Bank"}, normalizeName: "affin_bank"}),
+    new FpxBank({id: "ABMB0212", name: "Alliance Bank Malaysia Berhad", displayNames: {B2C:  "Alliance Bank (Personal)"}, normalizeName: "alliance_bank"}),
+    new FpxBank({id: "AMBB0209", name: "AmBank Malaysia Berhad", displayNames: {B2C:  "AmBank"}, normalizeName: "ambank"}),
+    new FpxBank({id: "BIMB0340", name: "Bank Islam Malaysia Berhad", displayNames: {B2C:  "Bank Islam", B2B1: "Bank Islam"}, normalizeName: "bank_islam"}),
+    new FpxBank({id: "BMMB0341", name: "Bank Muamalat Malaysia Berhad", displayNames: {B2C:  "Bank Muamalat"}, normalizeName: "bank_muamalat", status: 'offline'}),
+    new FpxBank({id: "BKRM0602", name: "Bank Kerjasama Rakyat Malaysia Berhad", displayNames: {B2C:  "Bank Rakyat", B2B1: "i-bizRAKYAT"}, normalizeName: "bank_rakyat"}),
+    new FpxBank({id: "BSN0601", name: "Bank Simpanan Nasional", displayNames: {B2C:  "BSN"}, normalizeName: "bsn"}),
+    new FpxBank({id: "BCBB0235", name: "CIMB Bank Berhad", displayNames: {B2C:  "CIMB Clicks", B2B1: "CIMB Bank"}, normalizeName: "cimb"}),
+    new FpxBank({id: "HLB0224", name: "Hong Leong Bank Berhad", displayNames: {B2C:  "Hong Leong Bank", B2B1: "Hong Leong Bank"}, normalizeName: "hong_leong_bank"}),
+    new FpxBank({id: "HSBC0223", name: "HSBC Bank Malaysia Berhad", displayNames: {B2C:  "HSBC Bank", B2B1: "HSBC Bank"}, normalizeName: "hsbc"}),
+    new FpxBank({id: "KFH0346", name: "Kuwait Finance House (Malaysia) Berhad", displayNames: {B2C:  "KFH", B2B1: "KFH"}, normalizeName: "kfh"}),
+    new FpxBank({id: "MB2U0227", name: "Malayan Banking Berhad (M2U)", displayNames: {B2C:  "Maybank2U"}, normalizeName: "maybank2u"}),
+    new FpxBank({id: "OCBC0229", name: "OCBC Bank Malaysia Berhad", displayNames: {B2C:  "OCBC Bank", B2B1: "OCBC Bank"}, normalizeName: "ocbc"}),
+    new FpxBank({id: "PBB0233", name: "Public Bank Berhad", displayNames: {B2C:  "Public Bank", B2B1: "Public Bank"}, normalizeName: "public_bank"}),
+    new FpxBank({id: "RHB0218", name: "RHB Bank Berhad", displayNames: {B2C:  "RHB Bank", B2B1: "RHB Bank"}, normalizeName: "rhb"}),
+    new FpxBank({id: "TEST0021", name: "SBI Bank A", displayNames: {B2C:  "SBI Bank A", B2B1: "SBI Bank A"}, normalizeName: "sbi_bank_a", is_testing_only: true}),
+    new FpxBank({id: "TEST0022", name: "SBI Bank B", displayNames: {B2C:  "SBI Bank B", B2B1: "SBI Bank B"}, normalizeName: "sbi_bank_b", is_testing_only: true}),
+    new FpxBank({id: "TEST0023", name: "SBI Bank C", displayNames: {B2C:  "SBI Bank C", B2B1: "SBI Bank C"}, normalizeName: "sbi_bank_c", is_testing_only: true}),
+    new FpxBank({id: "SCB0216", name: "Standard Chartered Bank", displayNames: {B2C:  "Standard Chartered"}, normalizeName: "standard_chartered", status: 'offline'}),
+    new FpxBank({id: "UOB0226", name: "United Overseas Bank", displayNames: {B2C:  "UOB Bank"}, normalizeName: "uob"}),
+    new FpxBank({id: "UOB0229", name: "United Overseas Bank - B2C Test", displayNames: {B2C:  "UOB Bank - Test ID"}, normalizeName: "uob_test", is_testing_only: true}),
+    new FpxBank({id: "ABB0232", name: "Affin Bank Berhad", displayNames: {B2B1:  "Affin Bank"}, normalizeName: "affin_bank"}),
+    new FpxBank({id: "ABMB0213", name: "Alliance Bank Malaysia Berhad", displayNames: {B2B1:  "Alliance Bank (Business)"}, normalizeName: "alliance_bank"}),
+    new FpxBank({id: "AMBB0208", name: "AmBank Malaysia Berhad", displayNames: {B2B1:  "AmBank"}, normalizeName: "ambank"}),
+    new FpxBank({id: "BMMB0342", name: "Bank Muamalat Malaysia Berhad", displayNames: {B2B1:  "Bank Muamalat"}, normalizeName: "bank_muamalat", status: 'offline'}),
+    new FpxBank({id: "DBB0199", name: "Deutsche Bank Berhad", displayNames: {B2B1:  "Deutsche Bank"}, normalizeName: "deutsche_bank"}),
+    new FpxBank({id: "MBB0228", name: "Malayan Banking Berhad (M2E)", displayNames: {B2B1:  "Maybank2E"}, normalizeName: "maybank2e"}),
+    new FpxBank({id: "PBB0234", name: "Public Bank Enterprise", displayNames: {B2B1:  "PB Enterprise"}, normalizeName: "pb_enterprise"}),
+    new FpxBank({id: "SCB0215", name: "Standard Chartered Bank", displayNames: {B2B1:  "Standard Chartered"}, normalizeName: "standard_chartered"}),
+    new FpxBank({id: "UOB0227", name: "United Overseas Bank", displayNames: {B2B1:  "UOB Bank"}, normalizeName: "uob"}),
+    new FpxBank({id: "UOB0228", name: "United Overseas Bank B2B Regional", displayNames: {B2B1:  "UOB Regional"}, normalizeName: "uob_regional", status: 'offline'}),
 
-  new FpxBank({id: 'ABB0233', name: 'Affin Bank Berhad', displayName: 'Affin Bank', normalizeName: 'affin_bank', businessModel: 'B2C'}),
-  new FpxBank({id: 'ABB0234', name: 'Affin Bank Berhad B2C - Test ID', displayName: 'Affin B2C - Test ID', normalizeName: 'affin_bank_test', businessModel: 'B2C', testOnly: true}),
-  new FpxBank({id: 'ABMB0212', name: 'Alliance Bank Malaysia Berhad', displayName: 'Alliance Bank (Personal)', normalizeName: 'alliance_bank', businessModel: 'B2C'}),
-  new FpxBank({id: 'AMBB0209', name: 'AmBank Malaysia Berhad', displayName: 'AmBank', normalizeName: 'ambank', businessModel: 'B2C'}),
-  new FpxBank({id: 'BIMB0340', name: 'Bank Islam Malaysia Berhad', displayName: 'Bank Islam', normalizeName: 'bank_islam', businessModel: 'B2C', status: 'offline'}),
-  new FpxBank({id: 'BKRM0602', name: 'Bank Kerjasama Rakyat Malaysia Berhad', displayName: 'Bank Rakyat', normalizeName: 'bank_rakyat', businessModel: 'B2C'}),
-  new FpxBank({id: 'BMMB0341', name: 'Bank Muamalat Malaysia Berhad', displayName: 'Bank Muamalat', normalizeName: 'bank_muamalat', businessModel: 'B2C', status: 'offline'}),
-  
-  new FpxBank({id: 'BSN0601', name: 'Bank Simpanan Nasional', displayName: 'BSN', normalizeName: 'bsn', businessModel: 'B2C'}),
-  new FpxBank({id: 'BCBB0235', name: 'CIMB Bank Berhad', displayName: 'CIMB Clicks', normalizeName: 'cimb', businessModel: 'B2C'}),
-  new FpxBank({id: 'HLB0224', name: 'Hong Leong Bank Berhad', displayName: 'Hong Leong Bank', normalizeName: 'hong_leong_bank', businessModel: 'B2C'}),
-  new FpxBank({id: 'HSBC0223', name: 'HSBC Bank Malaysia Berhad', displayName: 'HSBC Bank', normalizeName: 'hsbc', businessModel: 'B2C'}),
-  new FpxBank({id: 'KFH0346', name: 'Kuwait Finance House (Malaysia) Berhad', displayName: 'KFH', normalizeName: 'kfh', businessModel: 'B2C', status: 'offline'}),
-  new FpxBank({id: 'MB2U0227', name: 'Malayan Banking Berhad (M2U)', displayName: 'Maybank2U', normalizeName: 'maybank2u', businessModel: 'B2C'}),
-  
-  new FpxBank({id: 'OCBC0229', name: 'OCBC Bank Malaysia Berhad', displayName: 'OCBC Bank', normalizeName: 'ocbc', businessModel: 'B2C'}),
-  new FpxBank({id: 'PBB0233', name: 'Public Bank Berhad', displayName: 'Public Bank', normalizeName: 'public_bank', businessModel: 'B2C'}),
-  new FpxBank({id: 'RHB0218', name: 'RHB Bank Berhad', displayName: 'RHB Bank', normalizeName: 'rhb', businessModel: 'B2C', status: 'offline'}),
-  new FpxBank({id: 'SCB0216', name: 'Standard Chartered Bank', displayName: 'Standard Chartered', normalizeName: 'standard_chartered', businessModel: 'B2C', status: 'offline'}),
-  new FpxBank({id: 'UOB0226', name: 'United Overseas Bank', displayName: 'UOB Bank', normalizeName: 'uob', businessModel: 'B2C', status: 'offline'}),
-  new FpxBank({id: 'UOB0229', name: 'United Overseas Bank - B2C Test', displayName: 'UOB Bank - Test ID', normalizeName: 'uob_test', businessModel: 'B2C', testOnly: true}),
-  new FpxBank({id: 'CIT0219', name: 'CIT0219', displayName: 'CIT0219', normalizeName: 'citi', businessModel: 'B2C', status: 'offline'}),
 ];
+
 
 router.get('/fpx', (req, res) => {
   res.render('fpx.html');
@@ -140,7 +149,12 @@ router.post('/fpx/pm', async (req, res) => {
   } = req.body;
   
   // Bank should be normalized_name for bank
-  const {normalizeName: bankName} = banks.find(b => b.id === bank);
+  console.log('bank', bank)
+  const tokens = bank.split(':')
+  const bank_id = tokens[0]
+  const business_model = tokens[1]
+  console.log(bank_id, business_model)
+  const {normalizeName: bankName} = banks.find(b => b.id === bank_id);
 
   try {
     // 1. Create payment_intent
@@ -151,10 +165,12 @@ router.post('/fpx/pm', async (req, res) => {
     });
 
     // 2. Creating the payment method
+    const account_holder_type = business_model == 'B2C' ? 'individual' : 'company';
     let pm = await stripe.paymentMethods.create({
       type: 'fpx',
       fpx: {
-        bank: bankName
+        bank: bankName,
+        account_holder_type: account_holder_type
       }
     });
 
@@ -169,6 +185,7 @@ router.post('/fpx/pm', async (req, res) => {
       pi,
     });
   } catch (err) {
+    console.log(err)
     res.status(401).json({
       err: `${err}`,
     });
@@ -177,8 +194,8 @@ router.post('/fpx/pm', async (req, res) => {
 
 router.get('/fpx/banks', (req, res) => {
   banks.sort((a, b) => {
-    var nameA = a.displayName.toUpperCase(); // ignore upper and lowercase
-    var nameB = b.displayName.toUpperCase(); // ignore upper and lowercase
+    var nameA = (a.displayNames.B2C || a.displayNames.B2B1).toUpperCase(); // ignore upper and lowercase
+    var nameB = (b.displayNames.B2C || b.displayNames.B2B1).toUpperCase(); // ignore upper and lowercase
     if (nameA < nameB) {
       return -1;
     }
@@ -189,7 +206,7 @@ router.get('/fpx/banks', (req, res) => {
     // names must be equal
     return 0;
   })
-
+  console.log(banks)
   res.status(200).json(banks);
 });
 

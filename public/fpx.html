@@ -212,23 +212,33 @@
       const stripe = Stripe(config.stripePublishableKey);
 
       $.get('/fpx/banks', (banks) => {
-        banks.forEach(bank => {
-          $("#banks").append(`<option value="${bank.id}" ${bank.status=='offline' ? 'disabled="true"' : ''}>${bank.displayName} ${bank.status=='offline' ? '(offline)' : ''}</option>`);
-          bankMap[bank.id] = bank;
-        });
+        b2b_banks = banks.filter(bank => 'B2B1' in bank.displayNames)
+        b2c_banks = banks.filter(bank => 'B2C' in bank.displayNames)
+
+        $("#banks").append(`<option disabled>-----Consumer Banks----</option>`)
+        b2c_banks.forEach(bank => {
+          $("#banks").append(`<option value="${bank.id}:B2C" ${bank.status=='offline' ? 'disabled="true"' : ''}>${bank.displayNames.B2C} ${bank.status=='offline' ? '(offline)' : ''}</option>`);
+          bankMap[`${bank.id}:B2C`] = bank;
+        })
+        $("#banks").append(`<option disabled>-----Corporate Banks---</option>`)
+        b2b_banks.forEach(bank => {
+          $("#banks").append(`<option value="${bank.id}:B2B1" ${bank.status=='offline' ? 'disabled="true"' : ''}>${bank.displayNames.B2B1} ${bank.status=='offline' ? '(offline)' : ''}</option>`);
+          bankMap[`${bank.id}:B2B1`] = bank;
+        })
       });
 
       $("#banks").change(function () {
         var bank = this.value;
         if (this.value) {
+          var bank_mode = bank.split(':')[1];
           $('#error-message').removeClass('visible');
-          $('#bankMode').text((bankMap[bank].businessModel || 'unknown').toUpperCase());
+          $('#bankMode').text((bank_mode || 'unknown').toUpperCase());
+          var payment_mode_text = bank_mode == 'B2C' ? 'B2C (Retail Banking)' : "B2B (Corporate Banking)"
           $('#bankModeDesc').text('Payment Mode: B2C (Retail Banking)');
         } else {
           $('#bankMode').text('');
           $('#bankModeDesc').text('');
         }
-
       });
 
       $("#tosagreed").change(function () {
