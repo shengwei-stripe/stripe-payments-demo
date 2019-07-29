@@ -107,14 +107,17 @@ router.get('/fpx/pi/:id', async (req, res) => {
     const pi = await stripe.paymentIntents.retrieve(req.params.id);
     const charge = pi.charges.data[0];
     const lastPaymentErr = pi.last_payment_error;
+
+    const pm = await stripe.paymentMethods.retrieve(pi.payment_method)
     
     let fpxTxnDetails = charge ? {
       txnDt: charge.created,
       amount: charge.amount / 100,
-      sellerOrderNum: charge.statement_descriptor, // WIP
-      txnId: charge.payment_method_details.fpx_transaction_id, // WIP
+      sellerOrderNum: charge.statement_descriptor || "85243809", // WIP
+      txnId: charge.payment_method_details.fpx_transaction_id || "54696286707430", // WIP
       buyerBank: charge.payment_method_details.fpx.bank,
       txnStatus: charge.status,
+      account_holder_type: pm.fpx.account_holder_type,
     } : {
       txnDt: lastPaymentErr.payment_method.created,
       amount: pi.amount / 100,
@@ -122,6 +125,7 @@ router.get('/fpx/pi/:id', async (req, res) => {
       txnId: 'NA', // WIP
       buyerBank: lastPaymentErr.payment_method.fpx.bank, // WIP 
       txnStatus: 'failed',
+      account_holder_type: 'NA',
       error: lastPaymentErr.message,
       code: lastPaymentErr.code,
     };
@@ -149,11 +153,9 @@ router.post('/fpx/pm', async (req, res) => {
   } = req.body;
   
   // Bank should be normalized_name for bank
-  console.log('bank', bank)
   const tokens = bank.split(':')
   const bank_id = tokens[0]
   const business_model = tokens[1]
-  console.log(bank_id, business_model)
   const {normalizeName: bankName} = banks.find(b => b.id === bank_id);
 
   try {
@@ -185,7 +187,6 @@ router.post('/fpx/pm', async (req, res) => {
       pi,
     });
   } catch (err) {
-    console.log(err)
     res.status(401).json({
       err: `${err}`,
     });
@@ -206,7 +207,6 @@ router.get('/fpx/banks', (req, res) => {
     // names must be equal
     return 0;
   })
-  console.log(banks)
   res.status(200).json(banks);
 });
 
