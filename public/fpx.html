@@ -329,7 +329,7 @@
             return;
           }
 
-          let { txnDt, amount, sellerOrderNum, txnId, buyerBank, txnStatus, account_holder_type, error, code} = fpxTxnDetails;
+          let { txnDt, amount, sellerOrderNum, txnId, buyerBank, txnStatus, accountHolderType, error, code} = fpxTxnDetails;
           const txnDatetime = new Date(0);
           txnDatetime.setUTCSeconds(txnDt);
 
@@ -355,9 +355,10 @@
           $('#approve-bank').text(buyerBank);
           $('#approve-amount').text(`${amount} MYR`);
 
-          if (account_holder_type == 'individual') {
+          if (accountHolderType == 'individual') {
           } else {
             $('#status_icon').removeClass('tag beta').addClass('tag pending');
+            $('#status_icon').text('Pending');
             $('#approve-text').text('Please authorize the transaction with your bank to complete the transaction.')
           }
         });

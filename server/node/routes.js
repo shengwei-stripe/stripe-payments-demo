@@ -108,8 +108,6 @@ router.get('/fpx/pi/:id', async (req, res) => {
     const charge = pi.charges.data[0];
     const lastPaymentErr = pi.last_payment_error;
 
-    const pm = await stripe.paymentMethods.retrieve(pi.payment_method)
-    
     let fpxTxnDetails = charge ? {
       txnDt: charge.created,
       amount: charge.amount / 100,
@@ -117,7 +115,7 @@ router.get('/fpx/pi/:id', async (req, res) => {
       txnId: charge.payment_method_details.fpx_transaction_id || "54696286707430", // WIP
       buyerBank: charge.payment_method_details.fpx.bank,
       txnStatus: charge.status,
-      account_holder_type: pm.fpx.account_holder_type,
+      accountHolderType: charge.payment_method_details.fpx.account_holder_type,
     } : {
       txnDt: lastPaymentErr.payment_method.created,
       amount: pi.amount / 100,
@@ -125,7 +123,7 @@ router.get('/fpx/pi/:id', async (req, res) => {
       txnId: 'NA', // WIP
       buyerBank: lastPaymentErr.payment_method.fpx.bank, // WIP 
       txnStatus: 'failed',
-      account_holder_type: 'NA',
+      accountHolderType: 'NA',
       error: lastPaymentErr.message,
       code: lastPaymentErr.code,
     };
@@ -167,12 +165,12 @@ router.post('/fpx/pm', async (req, res) => {
     });
 
     // 2. Creating the payment method
-    const account_holder_type = business_model == 'B2C' ? 'individual' : 'company';
+    const accountHolderType = business_model == 'B2C' ? 'individual' : 'company';
     let pm = await stripe.paymentMethods.create({
       type: 'fpx',
       fpx: {
         bank: bankName,
-        account_holder_type: account_holder_type
+        account_holder_type: accountHolderType
       }
     });
 
