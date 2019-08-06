@@ -75,7 +75,7 @@
                 <td class="receipt-header receipt-header-txn">FPX Transaction # 1906271732380569</td>
               </tr>
               <tr>
-                <td class="receipt-header"><span class="tag beta">Approved</span></td>
+                <td class="receipt-header"><span class="tag beta" id="status_icon">Approved</span></td>
               </tr>
             </tbody>
           </table>
@@ -94,7 +94,7 @@
             </tbody>
           </table>
         </p>
-        <p class="note">We just sent your receipt to your email address, and your items will be on their way shortly.
+        <p id="approve-text" class="note">We just sent your receipt to your email address, and your items will be on their way shortly.
         </p>
       </div>
       <div class="status receiver">
@@ -212,23 +212,33 @@
       const stripe = Stripe(config.stripePublishableKey);
 
       $.get('/fpx/banks', (banks) => {
-        banks.forEach(bank => {
-          $("#banks").append(`<option value="${bank.id}" ${bank.status=='offline' ? 'disabled="true"' : ''}>${bank.displayName} ${bank.status=='offline' ? '(offline)' : ''}</option>`);
-          bankMap[bank.id] = bank;
-        });
+        b2b_banks = banks.filter(bank => 'B2B1' in bank.displayNames)
+        b2c_banks = banks.filter(bank => 'B2C' in bank.displayNames)
+
+        $("#banks").append(`<option disabled>-----Consumer Banks----</option>`)
+        b2c_banks.forEach(bank => {
+          $("#banks").append(`<option value="${bank.id}:B2C" ${bank.status=='offline' ? 'disabled="true"' : ''}>${bank.displayNames.B2C} ${bank.status=='offline' ? '(offline)' : ''}</option>`);
+          bankMap[`${bank.id}:B2C`] = bank;
+        })
+        $("#banks").append(`<option disabled>-----Corporate Banks---</option>`)
+        b2b_banks.forEach(bank => {
+          $("#banks").append(`<option value="${bank.id}:B2B1" ${bank.status=='offline' ? 'disabled="true"' : ''}>${bank.displayNames.B2B1} ${bank.status=='offline' ? '(offline)' : ''}</option>`);
+          bankMap[`${bank.id}:B2B1`] = bank;
+        })
       });
 
       $("#banks").change(function () {
         var bank = this.value;
         if (this.value) {
+          var bank_mode = bank.split(':')[1];
           $('#error-message').removeClass('visible');
-          $('#bankMode').text((bankMap[bank].businessModel || 'unknown').toUpperCase());
+          $('#bankMode').text((bank_mode || 'unknown').toUpperCase());
+          var payment_mode_text = bank_mode == 'B2C' ? 'B2C (Retail Banking)' : "B2B (Corporate Banking)"
           $('#bankModeDesc').text('Payment Mode: B2C (Retail Banking)');
         } else {
           $('#bankMode').text('');
           $('#bankModeDesc').text('');
         }
-
       });
 
       $("#tosagreed").change(function () {
@@ -320,7 +330,7 @@
             return;
           }
 
-          let { txnDt, amount, sellerOrderNum, txnId, buyerBank, txnStatus, error, code} = fpxTxnDetails;
+          let { txnDt, amount, sellerOrderNum, txnId, buyerBank, txnStatus, accountHolderType, error, code} = fpxTxnDetails;
           const txnDatetime = new Date(0);
           txnDatetime.setUTCSeconds(txnDt);
 
@@ -345,6 +355,13 @@
           $('#approve-date').text(formatDate(txnDatetime));
           $('#approve-bank').text(buyerBank);
           $('#approve-amount').text(`${amount} MYR`);
+
+          if (accountHolderType == 'individual') {
+          } else {
+            $('#status_icon').removeClass('tag beta').addClass('tag pending');
+            $('#status_icon').text('Pending');
+            $('#approve-text').text('Please authorize the transaction with your bank to complete the transaction.')
+          }
         });
     }
   </script>

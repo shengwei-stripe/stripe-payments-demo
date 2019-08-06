@@ -871,6 +871,19 @@ button:active {
   }
 }
 
+.tag.pending {
+  background: #a86432;
+  color: #e1f9e0;
+  padding-left: 6px;
+  padding-right: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 3px 4px;
+  margin-right: 3px;
+  border-radius: 2px;
+  position: relative;
+  left: 5px;
+}
 
 .tag.beta {
   background: #3ac134;
