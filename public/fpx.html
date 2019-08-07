@@ -234,7 +234,7 @@
           $('#error-message').removeClass('visible');
           $('#bankMode').text((bank_mode || 'unknown').toUpperCase());
           var payment_mode_text = bank_mode == 'B2C' ? 'B2C (Retail Banking)' : "B2B (Corporate Banking)"
-          $('#bankModeDesc').text('Payment Mode: B2C (Retail Banking)');
+          $('#bankModeDesc').text(`Payment Mode: ${payment_mode_text}`);
         } else {
           $('#bankMode').text('');
           $('#bankModeDesc').text('');
@@ -288,6 +288,7 @@
     });
 
     const handlePaymentIntent = (pi) => {
+      console.log('payment_intent ', pi);
       switch(pi.status) {
         case 'requires_action':
         case 'requires_source_action':
