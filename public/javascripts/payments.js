@@ -575,8 +575,8 @@
             <strong>${idct.account_number}</strong>
           </li>
           <li>
-            Routing Number:
-            <strong>${idct.routing_number}</strong>
+            Bank Code:
+            <strong>${idct.bank_code || idct.routing_number}</strong>
           </li>
         </ul>
       </div>

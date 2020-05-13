@@ -162,12 +162,13 @@ class Store {
 
   // Format a price (assuming a two-decimal currency like EUR or USD for simplicity).
   formatPrice(amount, currency) {
-    let price = (amount / 100).toFixed(2);
+    let price = (amount / 100).toFixed(0);
     let numberLocale = 'in-ID' || 'en-US';
     let numberFormat = new Intl.NumberFormat([numberLocale], {
       style: 'currency',
       currency: currency,
       currencyDisplay: 'symbol',
+      minimumFractionDigits: 0,
     });
     return numberFormat.format(price);
   }
