@@ -617,7 +617,7 @@
           <li>5. Confirm Payment</li>
           <li>6. Other ATMs</li>
           <li>7. Select Transfers &gt; Transfer to another Bank</li>
-          <li>8. Enter (${idct.routing_number}) as the ${idct.bank.toUpperCase()} code</li>
+          <li>8. Enter (${idct.bank_code || idct.routing_number}) as the ${idct.bank.toUpperCase()} code</li>
           <li>9. Enter paymetout &gt; Select Confirmation</li>
         </ol>
         <p>
