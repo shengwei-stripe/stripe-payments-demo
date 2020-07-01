@@ -23,7 +23,6 @@ module.exports = {
     // 'ach_credit_transfer', // usd (ACH Credit Transfer payments must be in U.S. Dollars)
     'alipay', // aud, cad, eur, gbp, hkd, jpy, nzd, sgd, or usd.
     'bancontact', // eur (Bancontact must always use Euros)
-    'card', // many (https://stripe.com/docs/currencies#presentment-currencies)
     'eps', // eur (EPS must always use Euros)
     'ideal', // eur (iDEAL must always use Euros)
     'giropay', // eur (Giropay must always use Euros)
@@ -62,10 +61,6 @@ module.exports = {
       flow: 'redirect',
       countries: ['BE'],
       currencies: ['eur'],
-    },
-    card: {
-      name: 'Card',
-      flow: 'none',
     },
     eps: {
       name: 'EPS',

@@ -60,7 +60,7 @@ router.post('/payment_intents', async (req, res, next) => {
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
       currency,
-      payment_method_types: ['id_credit_transfer'],
+      payment_method_types: supportedPmTypes,
     });
     return res.status(200).json({paymentIntent});
   } catch (err) {
