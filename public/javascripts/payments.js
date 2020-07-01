@@ -552,6 +552,30 @@
   const showBankTransferConfirmation = (receiverInfo, source, amount) => {
     // Display the Indonesia Bank Transfer information to the user.
     const idct = source.id_credit_transfer;
+
+    let bankDemoText = ''
+    if (idct.bank === 'bni') {
+      bankDemoText = `<ol>
+        <li>For demo, please select <strong>BNI &amp; Others</strong> banks.</li>
+        <li>1. Go to BNI <a href="http://dev.bni-ecollection.com/dev/flagging" target="_blank">Payment Simulator</a> page</li>
+        <li>2. Enter <strong>VA Number</strong> ${idct.account_number} and click search</li>
+        <li>3. Enter <strong>Payment Amount*</strong> ${source.amount/100}</li>
+        <li>4. Leave Direction as Credit</li>
+        <li>5. Click <strong style='color: green'>Flag</strong> button</li>
+      </ol>`;
+    }
+    if (idct.bank === 'bca') {
+      bankDemoText = `<ol>
+        <li>For demo, please select <strong>BNI &amp; Others</strong> banks.</li>
+        <li>1. Go to BCA <a href="https://admin.corp.stripe.com/excelsior/SimulateBCACommand" target="_blank">Payment Simulator</a> page</li>
+        <li>2. Use <strong>payment</strong> command.</li>
+        <li>3. Enter <strong>VA Number</strong> ${idct.account_number}</li>
+        <li>4. Enter <strong>Payment Amount*</strong> ${source.amount}</li>
+        <li>5. Enter <strong>Display Name*</strong> ${idct.display_name}</li>
+        <li>6. Click <strong style='color: green'>Run</strong> button</li>
+      </ol>`;
+    }
+
     receiverInfo.innerHTML = `
     <div class="info-header">
       Order ID ${source.id}
@@ -651,14 +675,7 @@
         </ol>
       </div>
       <div class="guide-info guide demo" id="guide-info-demo">
-        <ol>
-          <li>For demo, please select <strong>BNI &amp; Others</strong> banks.</li>
-          <li>1. Go to BNI <a href="http://dev.bni-ecollection.com/dev/flagging" target="_blank">Payment Simulator</a> page</li>
-          <li>2. Enter <strong>VA Number</strong> ${idct.account_number} and click search</li>
-          <li>3. Enter <strong>Payment Amount*</strong> ${source.amount/100}</li>
-          <li>4. Leave Direction as Credit</li>
-          <li>5. Click <strong style='color: green'>Flag</strong> button</li>
-        </ol>
+        ${bankDemoText}
       </div>
       `;
 
